@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Recommender</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            transition: background 0.5s;
+            margin: 0;
+            padding: 0;
+            background: #121212;
+            color: #fff;
+        }
+
+        h1, h2 { font-weight: 600; }
+
+        #survey, #results {
+            padding: 30px;
+            max-width: 700px;
+            margin: auto;
+        }
+
+        select, button {
+            padding: 12px 15px;
+            margin: 10px;
+            border-radius: 6px;
+            border: none;
+            font-size: 16px;
+        }
+
+        button {
+            background: #ff4757;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #e84118;
+            transform: scale(1.05);
+        }
+
+        .movie {
+            width: 250px;
+            background: #1e1e1e;
+            display: inline-block;
+            margin: 15px;
+            padding: 10px;
+            border-radius: 12px;
+            transition: 0.4s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .movie:hover {
+            transform: scale(1.1);
+        }
+
+        .movie img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .horror { background-color: #111; }
+        .action { background-color: #1a1a1a; }
+        .romance { background-color: #ffebf0; color: #000; }
+        .sad { background-color: #002f4b; }
+        .happy { background-color: #fff8d6; color: #000; }
+
+    </style>
+
+</head>
+<body>
+
+    <div id="survey">
+        <h1>🎬 Movie Recommendation System</h1>
+        <h3>Choose your Mood & Personality</h3>
+
+        <form id="moodForm">
+            <label>
+                Mood: 
+                <select id="mood">
+                    <option>Happy</option>
+                    <option>Sad</option>
+                    <option>Excited</option>
+                    <option>Scary</option>
+                    <option>Romantic</option>
+                </select>
+            </label>
+
+            <label>
+                Personality: 
+                <select id="personality">
+                    <option>Adventurous</option>
+                    <option>Shy</option>
+                    <option>Romantic</option>
+                    <option>Thoughtful</option>
+                </select>
+            </label>
+
+            <br>
+            <button type="submit">🎥 Get Recommendations</button>
+        </form>
+    </div>
+
+    <div id="results" style="display:none;">
+        <h2>Your Movie Picks 🍿</h2>
+        <div id="movies"></div>
+    </div>
+
+
+    <script>
+        const movies = {
+            horror: [
+                { title: "The Conjuring", platforms: ["Netflix"], img: "https://m.media-amazon.com/images/I/71p1sY9qsBL.jpg" },
+                { title: "Hereditary", platforms: ["Prime"], img: "https://m.media-amazon.com/images/I/71CMXcA6OoL.jpg" },
+                { title: "Insidious", platforms: ["Netflix"], img: "https://m.media-amazon.com/images/I/81P49m4TcoL.jpg" }
+            ],
+            action: [
+                { title: "John Wick", platforms: ["Prime"], img: "https://m.media-amazon.com/images/I/81uZzuzH23L.jpg" },
+                { title: "Mad Max: Fury Road", platforms: ["Netflix"], img: "https://m.media-amazon.com/images/I/91+E5Bg8K9L.jpg" },
+                { title: "Avengers: Endgame", platforms: ["Hotstar"], img: "https://m.media-amazon.com/images/I/81ExhpBEbHL.jpg" }
+            ],
+            romance: [
+                { title: "La La Land", platforms: ["Prime"], img: "https://m.media-amazon.com/images/I/71W8s8yNjLL.jpg" },
+                { title: "The Notebook", platforms: ["Netflix"], img: "https://m.media-amazon.com/images/I/91KkWf50SoL.jpg" },
+                { title: "Me Before You", platforms: ["Prime"], img: "https://m.media-amazon.com/images/I/71k6B7C5hDL.jpg" }
+            ],
+            sad: [
+                { title: "A Silent Voice", platforms: ["Netflix"], img: "https://m.media-amazon.com/images/I/71ODUvNbKSL._AC_SL1024_.jpg" },
+                { title: "The Fault in Our Stars", platforms: ["Hotstar"], img: "https://m.media-amazon.com/images/I/81q-H9CvWqL.jpg" }
+            ],
+            happy: [
+                { title: "Zootopia", platforms: ["Hotstar"], img: "https://m.media-amazon.com/images/I/91d7+SVr+PL.jpg" },
+                { title: "Paddington 2", platforms: ["Prime"], img: "https://m.media-amazon.com/images/I/71J0s8AjtYL.jpg" }
+            ]
+        };
+
+        document.getElementById('moodForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const mood = document.getElementById('mood').value;
+            const personality = document.getElementById('personality').value;
+
+            let genre = "action";
+            if (mood === "Scary") genre = "horror";
+            if (mood === "Romantic") genre = "romance";
+            if (mood === "Sad") genre = "sad";
+            if (mood === "Happy") genre = "happy";
+            if (personality === "Adventurous") genre = "action";
+            if (personality === "Shy" && mood !== "Scary") genre = "sad";
+
+            document.body.className = genre;
+
+            const movieList = movies[genre] || [];
+            const moviesDiv = document.getElementById('movies');
+            moviesDiv.innerHTML = "";
+
+            movieList.forEach(movie => {
+                const div = document.createElement("div");
+                div.className = "movie";
+                div.innerHTML = `
+                    <img src="${movie.img}">
+                    <h3>${movie.title}</h3>
+                    <p>Watch on: ${movie.platforms.join(", ")}</p>
+                `;
+                moviesDiv.appendChild(div);
+            });
+
+            document.getElementById("results").style.display = "block";
+            window.scrollTo({ top: 600, behavior: "smooth" });
+        });
+    </script>
+
+</body>
+</html>
